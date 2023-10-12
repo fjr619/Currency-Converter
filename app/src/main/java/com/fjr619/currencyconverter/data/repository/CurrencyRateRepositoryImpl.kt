@@ -10,23 +10,29 @@ import com.fjr619.currencyconverter.domain.model.RequestState
 import com.fjr619.currencyconverter.domain.repository.ICurrencyRateRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class CurrencyRateRepositoryImpl(
+class CurrencyRateRepositoryImpl @Inject constructor(
     private val api: CurrencyApi,
     private val dao: CurrencyRateDao
 ) : ICurrencyRateRepository {
     override fun getCurrencyRatesList(): Flow<RequestState<List<CurrencyRate>>> = flow {
+        emit(RequestState.Loading)
         val localCurrencyRates = getLocalCurrencyRates()
-        emit(RequestState.Success(localCurrencyRates))
+        if (localCurrencyRates.isNotEmpty()) {
+            emit(RequestState.Success(localCurrencyRates))
 
-        try {
             val newRates = getRemoteCurrencyRates()
             updateLocalCurrencyRates(newRates)
-            emit(RequestState.Success(newRates))
-        } catch (e: Exception) {
-            emit(RequestState.Error(e))
+        } else {
+            try {
+                val newRates = getRemoteCurrencyRates()
+                updateLocalCurrencyRates(newRates)
+                emit(RequestState.Success(newRates))
+            } catch (e: Exception) {
+                emit(RequestState.Error(e))
+            }
         }
-
     }
 
     private suspend fun getLocalCurrencyRates(): List<CurrencyRate> {
