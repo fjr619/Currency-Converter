@@ -2,6 +2,7 @@ package com.fjr619.currencyconverter.di
 
 import android.app.Application
 import androidx.room.Room
+import com.fjr619.currencyconverter.data.local.CurrencyRateDao
 import com.fjr619.currencyconverter.data.local.CurrencyRateDatabase
 import com.fjr619.currencyconverter.data.remote.CurrencyApi
 import com.fjr619.currencyconverter.util.Util
@@ -39,4 +40,9 @@ object AppModule {
             .build()
     }
 
+    @Provides
+    @Singleton
+    fun provideDao(
+        database: CurrencyRateDatabase
+    ): CurrencyRateDao = database.currencyRateDao
 }
