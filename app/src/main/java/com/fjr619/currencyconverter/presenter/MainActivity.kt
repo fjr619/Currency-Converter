@@ -24,14 +24,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            mainViewModel
             CurrencyConverterTheme {
                 // A surface container using the 'background' color from the theme
                 val state by mainViewModel.state.collectAsStateWithLifecycle()
                 Surface {
                     MainScreen(
                         state = state,
-                        onEvent = {})
+                        onEvent = mainViewModel::onEvent)
                 }
             }
         }

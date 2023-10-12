@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -33,7 +32,6 @@ import androidx.compose.ui.unit.sp
 import com.fjr619.currencyconverter.R
 import com.fjr619.currencyconverter.presenter.components.CardCurrencyFrom
 import com.fjr619.currencyconverter.presenter.components.CardCurrencyTo
-import com.fjr619.currencyconverter.presenter.components.CurrencyRow
 import com.fjr619.currencyconverter.presenter.components.KeyboardButton
 
 @Composable
