@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
@@ -40,7 +41,7 @@ fun MainScreen(
     onEvent: (MainScreenEvent) -> Unit
 ) {
 
-    val keys = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "C")
+    val keys = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "C")
 
     Column(
         modifier = Modifier
@@ -90,17 +91,24 @@ fun MainScreen(
         }
 
         LazyVerticalGrid(
-            modifier = Modifier.padding(horizontal = 30.dp),
+            modifier = Modifier.padding(horizontal = 16.dp),
             columns = GridCells.Fixed(3)
         ) {
-            items(keys) { key ->
+            items(keys,
+                span = { key ->
+                    val spanCount = if (key == "C") 2 else 1
+                    GridItemSpan(spanCount)
+                }
+            ) { key ->
                 KeyboardButton(
-                    modifier = Modifier.aspectRatio(1f),
-                    key = key,
+//                    modifier = Modifier.aspectRatio(1f),
+                    key = if (key != ".") key else "",
                     backgroundColor = if (key == "C") MaterialTheme.colorScheme.primaryContainer
-                    else MaterialTheme.colorScheme.surfaceVariant,
+                    else if (key == ".") MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.surfaceVariant,
                     onClick = {
-                        onEvent(MainScreenEvent.NumberButtonClicked(key))
+                        if (key != ".") {
+                            onEvent(MainScreenEvent.NumberButtonClicked(key))
+                        }
                     }
                 )
             }

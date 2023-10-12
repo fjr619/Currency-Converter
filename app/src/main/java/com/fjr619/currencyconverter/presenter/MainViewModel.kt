@@ -34,6 +34,8 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    //TODO ganti jadi edittext dan pakai VisualTransformation
+    //https://medium.com/@banmarkovic/how-to-create-currency-amount-input-in-android-jetpack-compose-1bd11ba3b629
     private fun updateCurrencyValue(value: String) {
         val currentCurrencyValue = when(state.value.selection) {
             SelectionState.FROM -> state.value.fromCurrencyValue
@@ -44,39 +46,43 @@ class MainViewModel @Inject constructor(
         val toCurrencyRate = state.value.currencyRates[state.value.toCurrencyCode]?.rate ?: 0.0
 
         val updatedCurrencyValue = when(value) {
-            "C" -> "0.00"
-            else -> if (currentCurrencyValue == "0.00") value else {
-                (currentCurrencyValue + value).run {
-                    var newValue = this
-                    if (newValue.length > 10) {
-                        newValue = newValue.substring(0,10)
+            "C" -> "0"
+            else ->
+                if (currentCurrencyValue == "0") value else {
+                    (currentCurrencyValue + value).run {
+                        if (this.length > 12) {
+                            this.substring(0,12)
+                        } else {
+                            this
+                        }
                     }
 
-                    newValue
                 }
-            }
         }
 
-        val numberFormat = DecimalFormat("#.00")
+        Log.e("TAG", "$currentCurrencyValue $updatedCurrencyValue")
+
+        val numberFormat = DecimalFormat("#.##")
 
         when(state.value.selection) {
             SelectionState.FROM -> {
+
                 val fromValue = updatedCurrencyValue.toDoubleOrNull() ?: 0.0
-                val toValue = fromValue / fromCurrencyRate * toCurrencyRate
+                val toValue = fromValue/ 100 / fromCurrencyRate * toCurrencyRate
                 _state.update { mainScreenState ->
                     mainScreenState.copy(
                         fromCurrencyValue = updatedCurrencyValue,
-                        toCurrencyValue = numberFormat.format(toValue)
+                        toCurrencyValue = (numberFormat.format(toValue).toDouble() * 100).toInt().toString()
                     )
                 }
             }
             SelectionState.TO -> {
                 val toValue = updatedCurrencyValue.toDoubleOrNull() ?: 0.0
-                val fromValue = toValue / toCurrencyRate * fromCurrencyRate
+                val fromValue = toValue/ 100 / toCurrencyRate * fromCurrencyRate
                 _state.update { mainScreenState ->
                     mainScreenState.copy(
                         fromCurrencyValue = updatedCurrencyValue,
-                        toCurrencyValue = numberFormat.format(fromValue)
+                        toCurrencyValue = (numberFormat.format(fromValue).toDouble() * 100).toInt().toString()
                     )
                 }
             }
