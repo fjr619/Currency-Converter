@@ -43,16 +43,16 @@ fun MainContentPortrait(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.SpaceAround
+        verticalArrangement = Arrangement.SpaceEvenly
     ) {
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = "Currency Converter",
-            fontFamily = FontFamily.Default,
-            fontSize = 40.sp,
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Bold
-        )
+//        Text(
+//            modifier = Modifier.fillMaxWidth(),
+//            text = "Currency Converter",
+//            fontFamily = FontFamily.Default,
+//            fontSize = 40.sp,
+//            textAlign = TextAlign.Center,
+//            fontWeight = FontWeight.Bold
+//        )
 
         Box(
             contentAlignment = Alignment.CenterStart
@@ -87,7 +87,6 @@ fun MainContentPortrait(
         }
 
         LazyVerticalGrid(
-            modifier = Modifier.padding(horizontal = 16.dp),
             columns = GridCells.Fixed(3)
         ) {
             items(keys,
