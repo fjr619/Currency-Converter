@@ -85,7 +85,7 @@ fun MainScreen(
                     painter = painterResource(R.drawable.ic_swap),
                     contentDescription = "Swap Currency",
                     modifier = Modifier.size(30.dp),
-                    tint = MaterialTheme.colorScheme.onSurface
+                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.9f)
                 )
             }
         }
@@ -101,10 +101,9 @@ fun MainScreen(
                 }
             ) { key ->
                 KeyboardButton(
-//                    modifier = Modifier.aspectRatio(1f),
-                    key = if (key != ".") key else "",
+                    key = key,
                     backgroundColor = if (key == "C") MaterialTheme.colorScheme.primaryContainer
-                    else if (key == ".") MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.surfaceVariant,
+                    else MaterialTheme.colorScheme.surfaceVariant,
                     onClick = {
                         if (key != ".") {
                             onEvent(MainScreenEvent.NumberButtonClicked(key))

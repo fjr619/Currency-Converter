@@ -30,12 +30,20 @@ class MainViewModel @Inject constructor(
             is MainScreenEvent.NumberButtonClicked -> {
                 updateCurrencyValue(value = event.value)
             }
+            is MainScreenEvent.SwapIconClicked -> {
+                _state.update { mainScreenState ->
+                    mainScreenState.copy(
+                        fromCurrencyCode = state.value.toCurrencyCode,
+                        fromCurrencyValue = state.value.toCurrencyValue,
+                        toCurrencyCode = state.value.fromCurrencyCode,
+                        toCurrencyValue = state.value.fromCurrencyValue
+                    )
+                }
+            }
             else -> {}
         }
     }
 
-    //TODO ganti jadi edittext dan pakai VisualTransformation
-    //https://medium.com/@banmarkovic/how-to-create-currency-amount-input-in-android-jetpack-compose-1bd11ba3b629
     private fun updateCurrencyValue(value: String) {
         val currentCurrencyValue = when(state.value.selection) {
             SelectionState.FROM -> state.value.fromCurrencyValue
@@ -59,8 +67,6 @@ class MainViewModel @Inject constructor(
 
                 }
         }
-
-        Log.e("TAG", "$currentCurrencyValue $updatedCurrencyValue")
 
         val numberFormat = DecimalFormat("#.##")
 
@@ -113,8 +119,6 @@ class MainViewModel @Inject constructor(
                                     loading = false
                                 )
                             }
-
-                            Log.e("TAG", "sukses rate IDR ${state.value.currencyRates["IDR"]}")
                         }
                         is RequestState.Error -> {
                             _state.update { mainScreenState ->
@@ -124,8 +128,6 @@ class MainViewModel @Inject constructor(
                                     loading = false
                                 )
                             }
-
-                            Log.e("TAG", "Error ${state.value.error}")
                         }
                         else -> {
 

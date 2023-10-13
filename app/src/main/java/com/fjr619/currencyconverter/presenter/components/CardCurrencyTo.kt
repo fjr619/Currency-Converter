@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.fjr619.currencyconverter.presenter.MainScreenState
+import com.fjr619.currencyconverter.presenter.SelectionState
 import com.fjr619.currencyconverter.util.CurrencyAmountInputVisualTransformation
 
 @Composable
@@ -34,7 +35,7 @@ fun CardCurrencyTo(
             horizontalAlignment = Alignment.End
         ) {
             TextField(
-                enabled = false,
+                readOnly = true,
                 value = state.toCurrencyValue,
                 onValueChange = {
                     Log.e("TAG", "change $it")
@@ -46,7 +47,17 @@ fun CardCurrencyTo(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
-                    disabledTextColor = MaterialTheme.colorScheme.onBackground
+                    unfocusedTextColor = if (state.selection == SelectionState.TO) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onBackground
+                    }.copy(alpha = 1f),
+
+                    focusedTextColor = if (state.selection == SelectionState.TO) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onBackground
+                    }.copy(alpha = 1f)
                 ),
                 textStyle = LocalTextStyle.current.copy(fontSize = 35.sp, textAlign = TextAlign.End)
 
