@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val repository: ICurrencyRateRepository
-): ViewModel() {
+) : ViewModel() {
 
     private var _state = MutableStateFlow(MainScreenState())
     val state = _state.asStateFlow()
@@ -26,10 +26,11 @@ class MainViewModel @Inject constructor(
     }
 
     fun onEvent(event: MainScreenEvent) {
-        when(event) {
+        when (event) {
             is MainScreenEvent.NumberButtonClicked -> {
                 updateCurrencyValue(value = event.value)
             }
+
             is MainScreenEvent.SwapIconClicked -> {
                 _state.update { mainScreenState ->
                     mainScreenState.copy(
@@ -40,12 +41,38 @@ class MainViewModel @Inject constructor(
                     )
                 }
             }
+
+            is MainScreenEvent.FromCurrencySelect -> {
+                _state.update { mainScreenState ->
+                    mainScreenState.copy(selectionBottonSheet = SelectionState.FROM)
+                }
+            }
+
+            is MainScreenEvent.ToCurrencySelect -> {
+                _state.update { mainScreenState ->
+                    mainScreenState.copy(selectionBottonSheet = SelectionState.TO)
+                }
+            }
+
+            is MainScreenEvent.BottomSheetItemClicked -> {
+                if (state.value.selectionBottonSheet == SelectionState.FROM) {
+                    _state.update { mainScreenState ->
+                        mainScreenState.copy(fromCurrencyCode = event.value)
+                    }
+                } else if (state.value.selectionBottonSheet == SelectionState.TO) {
+                    _state.update { mainScreenState ->
+                        mainScreenState.copy(toCurrencyCode = event.value)
+                    }
+                }
+                updateCurrencyValue("")
+            }
+
             else -> {}
         }
     }
 
     private fun updateCurrencyValue(value: String) {
-        val currentCurrencyValue = when(state.value.selection) {
+        val currentCurrencyValue = when (state.value.selection) {
             SelectionState.FROM -> state.value.fromCurrencyValue
             SelectionState.TO -> state.value.toCurrencyValue
         }
@@ -53,13 +80,13 @@ class MainViewModel @Inject constructor(
         val fromCurrencyRate = state.value.currencyRates[state.value.fromCurrencyCode]?.rate ?: 0.0
         val toCurrencyRate = state.value.currencyRates[state.value.toCurrencyCode]?.rate ?: 0.0
 
-        val updatedCurrencyValue = when(value) {
+        val updatedCurrencyValue = when (value) {
             "C" -> "0"
             else ->
                 if (currentCurrencyValue == "0") value else {
                     (currentCurrencyValue + value).run {
                         if (this.length > 12) {
-                            this.substring(0,12)
+                            this.substring(0, 12)
                         } else {
                             this
                         }
@@ -70,25 +97,28 @@ class MainViewModel @Inject constructor(
 
         val numberFormat = DecimalFormat("#.##")
 
-        when(state.value.selection) {
+        when (state.value.selection) {
             SelectionState.FROM -> {
 
                 val fromValue = updatedCurrencyValue.toDoubleOrNull() ?: 0.0
-                val toValue = fromValue/ 100 / fromCurrencyRate * toCurrencyRate
+                val toValue = fromValue / 100 / fromCurrencyRate * toCurrencyRate
                 _state.update { mainScreenState ->
                     mainScreenState.copy(
                         fromCurrencyValue = updatedCurrencyValue,
-                        toCurrencyValue = (numberFormat.format(toValue).toDouble() * 100).toInt().toString()
+                        toCurrencyValue = (numberFormat.format(toValue).toDouble() * 100).toInt()
+                            .toString()
                     )
                 }
             }
+
             SelectionState.TO -> {
                 val toValue = updatedCurrencyValue.toDoubleOrNull() ?: 0.0
-                val fromValue = toValue/ 100 / toCurrencyRate * fromCurrencyRate
+                val fromValue = toValue / 100 / toCurrencyRate * fromCurrencyRate
                 _state.update { mainScreenState ->
                     mainScreenState.copy(
                         fromCurrencyValue = updatedCurrencyValue,
-                        toCurrencyValue = (numberFormat.format(fromValue).toDouble() * 100).toInt().toString()
+                        toCurrencyValue = (numberFormat.format(fromValue).toDouble() * 100).toInt()
+                            .toString()
                     )
                 }
             }
@@ -102,8 +132,7 @@ class MainViewModel @Inject constructor(
                 .collect { result ->
                     when (result) {
                         is RequestState.Loading -> {
-                            _state.update {
-                                mainScreenState ->
+                            _state.update { mainScreenState ->
                                 mainScreenState.copy(
                                     loading = true
                                 )
@@ -111,6 +140,7 @@ class MainViewModel @Inject constructor(
 
                             Log.e("TAG", "loading")
                         }
+
                         is RequestState.Success -> {
                             _state.update { mainScreenState ->
                                 mainScreenState.copy(
@@ -120,6 +150,7 @@ class MainViewModel @Inject constructor(
                                 )
                             }
                         }
+
                         is RequestState.Error -> {
                             _state.update { mainScreenState ->
                                 mainScreenState.copy(
@@ -129,6 +160,7 @@ class MainViewModel @Inject constructor(
                                 )
                             }
                         }
+
                         else -> {
 
                         }

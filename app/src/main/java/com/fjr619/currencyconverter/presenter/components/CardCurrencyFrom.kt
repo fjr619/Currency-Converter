@@ -23,6 +23,7 @@ import com.fjr619.currencyconverter.util.CurrencyAmountInputVisualTransformation
 @Composable
 fun ColumnScope.CardCurrencyFrom(
     state: MainScreenState,
+    onDropDownIconClicked: () -> Unit,
 ) {
 
     Card(
@@ -38,9 +39,7 @@ fun ColumnScope.CardCurrencyFrom(
                 modifier = Modifier.fillMaxWidth(),
                 currencyCode = state.fromCurrencyCode,
                 currencyName = state.currencyRates[state.fromCurrencyCode]?.name ?: "",
-                onDropDownIconClicked = {
-                    //TODO
-                }
+                onDropDownIconClicked = onDropDownIconClicked
             )
 
             TextField(

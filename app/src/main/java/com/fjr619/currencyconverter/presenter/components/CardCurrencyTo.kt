@@ -23,7 +23,8 @@ import com.fjr619.currencyconverter.util.CurrencyAmountInputVisualTransformation
 
 @Composable
 fun CardCurrencyTo(
-    state: MainScreenState
+    state: MainScreenState,
+    onDropDownIconClicked: () -> Unit,
 ) {
     Card(
         modifier = Modifier.fillMaxWidth()
@@ -67,9 +68,7 @@ fun CardCurrencyTo(
                 modifier = Modifier.fillMaxWidth(),
                 currencyCode = state.toCurrencyCode,
                 currencyName = state.currencyRates[state.toCurrencyCode]?.name ?: "",
-                onDropDownIconClicked = {
-                    //TODO
-                }
+                onDropDownIconClicked = onDropDownIconClicked
             )
         }
     }

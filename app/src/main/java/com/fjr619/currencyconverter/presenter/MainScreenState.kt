@@ -8,6 +8,7 @@ data class MainScreenState(
     val fromCurrencyValue: String = "0",
     val toCurrencyValue: String = "0",
     val selection: SelectionState = SelectionState.FROM,
+    val selectionBottonSheet: SelectionState = SelectionState.FROM,
     val currencyRates: Map<String, CurrencyRate> = emptyMap(),
     val error: String? = null,
     val loading: Boolean = true

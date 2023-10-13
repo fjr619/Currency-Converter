@@ -34,6 +34,8 @@ fun MainContentLandscape(
     state: MainScreenState,
     onEvent: (MainScreenEvent) -> Unit,
     keys: List<String>,
+    onSelectFromCurrency: () -> Unit,
+    onSelectToCurrency: () -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxSize(),
@@ -46,12 +48,12 @@ fun MainContentLandscape(
         ) {
             Column {
                 //card currency from
-                CardCurrencyFrom(state = state)
+                CardCurrencyFrom(state = state, onDropDownIconClicked = onSelectFromCurrency)
 
                 Spacer(modifier = Modifier.height(12.dp))
 
                 //card currency to
-                CardCurrencyTo(state = state)
+                CardCurrencyTo(state = state, onDropDownIconClicked = onSelectToCurrency)
             }
 
             //currency swap
