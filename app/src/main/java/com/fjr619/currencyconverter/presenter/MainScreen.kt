@@ -1,9 +1,12 @@
 package com.fjr619.currencyconverter.presenter
 
+import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,9 +24,18 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -34,6 +46,7 @@ import com.fjr619.currencyconverter.R
 import com.fjr619.currencyconverter.presenter.components.CardCurrencyFrom
 import com.fjr619.currencyconverter.presenter.components.CardCurrencyTo
 import com.fjr619.currencyconverter.presenter.components.KeyboardButton
+import com.fjr619.currencyconverter.presenter.components.MainContentPortrait
 
 @Composable
 fun MainScreen(
@@ -43,74 +56,18 @@ fun MainScreen(
 
     val keys = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "C")
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.SpaceAround
-    ) {
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = "Currency Converter",
-            fontFamily = FontFamily.Default,
-            fontSize = 40.sp,
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Bold
-        )
+    val configuration = LocalConfiguration.current
 
-        Box(
-            contentAlignment = Alignment.CenterStart
-        ) {
-            Column {
-                //card currency from
-                CardCurrencyFrom(state = state)
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                //card currency to
-                CardCurrencyTo(state = state)
-            }
-
-            //currency swap
-            IconButton(
-                onClick = {
-                    onEvent(MainScreenEvent.SwapIconClicked)
-                },
-                modifier = Modifier
-                    .padding(start = 40.dp)
-                    .clip(CircleShape)
-                    .background(color = MaterialTheme.colorScheme.background)
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_swap),
-                    contentDescription = "Swap Currency",
-                    modifier = Modifier.size(30.dp),
-                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.9f)
-                )
-            }
-        }
-
-        LazyVerticalGrid(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            columns = GridCells.Fixed(3)
-        ) {
-            items(keys,
-                span = { key ->
-                    val spanCount = if (key == "C") 2 else 1
-                    GridItemSpan(spanCount)
-                }
-            ) { key ->
-                KeyboardButton(
-                    key = key,
-                    backgroundColor = if (key == "C") MaterialTheme.colorScheme.primaryContainer
-                    else MaterialTheme.colorScheme.surfaceVariant,
-                    onClick = {
-                        if (key != ".") {
-                            onEvent(MainScreenEvent.NumberButtonClicked(key))
-                        }
-                    }
-                )
-            }
-        }
+    var orientation by rememberSaveable { mutableIntStateOf(Configuration.ORIENTATION_PORTRAIT) }
+    LaunchedEffect(configuration.orientation) {
+        orientation = configuration.orientation
     }
+    
+    if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+        MainContentPortrait(state = state, onEvent = onEvent, keys = keys)
+    } else {
+        MainContentLandscape(state = state, onEvent = onEvent, keys = keys)
+    }
+
+    
 }

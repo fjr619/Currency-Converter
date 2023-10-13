@@ -24,7 +24,7 @@ fun KeyboardButton(
 ) {
     Box(
         modifier = modifier
-            .height(100.dp)
+
             .padding(8.dp)
             .clip(CircleShape)
             .background(color = backgroundColor)
